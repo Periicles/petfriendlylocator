@@ -30,7 +30,9 @@ const postReq = (body: unknown) =>
     headers: { 'Content-Type': 'application/json' },
   }) as unknown as NextRequest;
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('GET /api/locations/[id]/reviews', () => {
   it('returns mapped reviews for the location', async () => {

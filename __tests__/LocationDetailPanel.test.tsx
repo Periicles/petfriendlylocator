@@ -11,6 +11,7 @@ jest.mock('next-auth/react', () => ({
   useSession: jest.fn(),
 }));
 const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
+const SESSION_EXPIRES = '2099-01-01T00:00:00.000Z';
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch as jest.Mock;
@@ -86,7 +87,10 @@ describe('LocationDetailPanel', () => {
 
   it('submits a new review and prepends it to the list', async () => {
     mockUseSession.mockReturnValue({
-      data: { user: { id: 'u1', email: 'a@b.c' } },
+      data: {
+        user: { id: 'u1', email: 'a@b.c', pseudo: 'user1' },
+        expires: SESSION_EXPIRES,
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
@@ -112,7 +116,10 @@ describe('LocationDetailPanel', () => {
 
   it('shows a server error message when the post fails', async () => {
     mockUseSession.mockReturnValue({
-      data: { user: { id: 'u1', email: 'a@b.c' } },
+      data: {
+        user: { id: 'u1', email: 'a@b.c', pseudo: 'user1' },
+        expires: SESSION_EXPIRES,
+      },
       status: 'authenticated',
       update: jest.fn(),
     });

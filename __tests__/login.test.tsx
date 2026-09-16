@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { signIn } from 'next-auth/react';
+import { signIn, type SignInResponse } from 'next-auth/react';
 import LoginPage from '@/app/login/page';
 
 jest.mock('next-auth/react', () => ({
@@ -14,6 +14,15 @@ jest.mock('next/link', () => {
 });
 
 const mockSignIn = signIn as jest.MockedFunction<typeof signIn>;
+
+const signInResponse = (overrides: Partial<SignInResponse> = {}): SignInResponse => ({
+  error: undefined,
+  code: undefined,
+  status: 200,
+  ok: true,
+  url: null,
+  ...overrides,
+});
 
 describe('LoginPage', () => {
   beforeEach(() => {
@@ -47,7 +56,7 @@ describe('LoginPage', () => {
 
   it('calls signIn with correct credentials when login button is clicked', async () => {
     const user = userEvent.setup();
-    mockSignIn.mockResolvedValueOnce(undefined);
+    mockSignIn.mockResolvedValueOnce(signInResponse());
 
     render(<LoginPage />);
 
@@ -71,7 +80,7 @@ describe('LoginPage', () => {
 
   it('calls signIn with empty credentials when fields are empty', async () => {
     const user = userEvent.setup();
-    mockSignIn.mockResolvedValueOnce(undefined);
+    mockSignIn.mockResolvedValueOnce(signInResponse());
 
     render(<LoginPage />);
 
@@ -116,7 +125,9 @@ describe('LoginPage', () => {
 
   it('handles signIn error result gracefully', async () => {
     const user = userEvent.setup();
-    mockSignIn.mockResolvedValueOnce({ error: 'CredentialsSignin' });
+    mockSignIn.mockResolvedValueOnce(
+      signInResponse({ error: 'CredentialsSignin', code: 'credentials', status: 401, ok: false })
+    );
 
     render(<LoginPage />);
 
@@ -141,8 +152,8 @@ describe('LoginPage', () => {
 
   it('shows loading state during sign in', async () => {
     const user = userEvent.setup();
-    let resolveSignIn: () => void;
-    const signInPromise = new Promise<void>((resolve) => {
+    let resolveSignIn: (_value: SignInResponse) => void;
+    const signInPromise = new Promise<SignInResponse>((resolve) => {
       resolveSignIn = resolve;
     });
     mockSignIn.mockReturnValueOnce(signInPromise);
@@ -162,7 +173,7 @@ describe('LoginPage', () => {
     expect(emailInput).toBeDisabled();
     expect(passwordInput).toBeDisabled();
 
-    resolveSignIn!();
+    resolveSignIn!(signInResponse());
 
     await waitFor(() => {
       expect(screen.getByText('Se connecter')).toBeInTheDocument();
@@ -188,7 +199,7 @@ describe('LoginPage', () => {
       expect(screen.getByText('Une erreur est survenue lors de la connexion')).toBeInTheDocument();
     });
 
-    mockSignIn.mockResolvedValueOnce(undefined);
+    mockSignIn.mockResolvedValueOnce(signInResponse());
     await user.click(loginButton);
 
     await waitFor(() => {
@@ -294,7 +305,7 @@ describe('LoginPage', () => {
 
   it('handles multiple login attempts correctly', async () => {
     const user = userEvent.setup();
-    mockSignIn.mockResolvedValue(undefined);
+    mockSignIn.mockResolvedValue(signInResponse());
 
     render(<LoginPage />);
 

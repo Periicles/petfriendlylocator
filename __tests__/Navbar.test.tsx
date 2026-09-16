@@ -43,7 +43,7 @@ describe('Navbar', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePathname.mockReturnValue('/');
-    mockSignOut.mockResolvedValue(undefined);
+    mockSignOut.mockResolvedValue({ url: '/' });
   });
 
   it('returns null when loading', () => {

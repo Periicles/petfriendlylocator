@@ -11,6 +11,7 @@ jest.mock('next-auth/react', () => ({
   useSession: jest.fn(),
 }));
 const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
+const SESSION_EXPIRES = '2099-01-01T00:00:00.000Z';
 
 jest.mock('@/components/AddLocationModal', () => {
   return function MockAddLocationModal({
@@ -57,7 +58,10 @@ describe('LocationSidebar', () => {
 
   it('renders add button when user is logged in', () => {
     mockUseSession.mockReturnValue({
-      data: { user: { id: '1', email: 'test@test.com' } },
+      data: {
+        user: { id: '1', email: 'test@test.com', pseudo: 'tester' },
+        expires: SESSION_EXPIRES,
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
@@ -147,7 +151,10 @@ describe('LocationSidebar', () => {
 
   it('opens modal when add button is clicked', async () => {
     mockUseSession.mockReturnValue({
-      data: { user: { id: '1', email: 'test@test.com' } },
+      data: {
+        user: { id: '1', email: 'test@test.com', pseudo: 'tester' },
+        expires: SESSION_EXPIRES,
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
@@ -163,7 +170,10 @@ describe('LocationSidebar', () => {
 
   it('closes modal when onClose is called', async () => {
     mockUseSession.mockReturnValue({
-      data: { user: { id: '1', email: 'test@test.com' } },
+      data: {
+        user: { id: '1', email: 'test@test.com', pseudo: 'tester' },
+        expires: SESSION_EXPIRES,
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
@@ -179,7 +189,10 @@ describe('LocationSidebar', () => {
 
   it('calls refreshLocations and closes modal on success', async () => {
     mockUseSession.mockReturnValue({
-      data: { user: { id: '1', email: 'test@test.com' } },
+      data: {
+        user: { id: '1', email: 'test@test.com', pseudo: 'tester' },
+        expires: SESSION_EXPIRES,
+      },
       status: 'authenticated',
       update: jest.fn(),
     });
@@ -230,7 +243,10 @@ describe('LocationSidebar', () => {
 
   it('maintains search state while modal operations', async () => {
     mockUseSession.mockReturnValue({
-      data: { user: { id: '1', email: 'test@test.com' } },
+      data: {
+        user: { id: '1', email: 'test@test.com', pseudo: 'tester' },
+        expires: SESSION_EXPIRES,
+      },
       status: 'authenticated',
       update: jest.fn(),
     });

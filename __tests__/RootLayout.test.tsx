@@ -22,6 +22,11 @@ jest.mock('@/components/ClientNavbarWrapper', () => {
   };
 });
 
+// @vercel/analytics ships ESM only, which Jest cannot parse without transforming node_modules
+jest.mock('@vercel/analytics/next', () => ({
+  Analytics: () => null,
+}));
+
 describe('RootLayout', () => {
   // RootLayout renders <html>/<body>, which RTL necessarily mounts inside a <div>.
   // Silence only that benign DOM-nesting warning; let any real errors surface.

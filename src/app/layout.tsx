@@ -1,4 +1,5 @@
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import { Providers } from '@/providers';
 import ClientNavbarWrapper from '@/components/ClientNavbarWrapper';
 import type { Metadata } from 'next';
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             © 2025 Pet Friendly Locator
           </footer>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
